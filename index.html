@@ -220,14 +220,14 @@ function renderCmp(){const box=$('cmp');box.innerHTML='';const ps=PS.filter(p=>S
   box.appendChild(d)})}
 
 const ENDPOINT='https://script.google.com/macros/s/AKfycby6UFrYQNCqnbpebHRzET6UKYC_CoXchSYDUaLRwUVF3d-p7Nqa6shc43gWl4GzUt9ycQ/exec';
-const VGRP=[['Partidos',PS.map(p=>p.n).concat(['Otro partido'])],['Si no vas a votar a un partido',['No lo sé','No voy a votar','En blanco']]];
+const VGRP=[['Partidos',PS.map(p=>p.n)],['Otras opciones',['Otro partido','No lo tengo claro todavía','No voy a votar','En blanco','Voto nulo','Prefiero no decirlo']]];
 VGRP.forEach(([lab,os])=>{const g=document.createElement('optgroup');g.label=lab;os.forEach(o=>{const e=document.createElement('option');e.value=o;e.textContent=o;g.appendChild(e)});$('voto').appendChild(g)});
 let LAST=null;
 function sentFlag(){try{return localStorage.getItem(KEY+'_sent')==='1'}catch(e){return false}}
 function setSent(){try{localStorage.setItem(KEY+'_sent','1')}catch(e){}}
 $('voto').onchange=()=>$('verr').textContent='';$('consent').onchange=()=>$('verr').textContent='';
 $('send').onclick=async()=>{const v=$('voto').value;
- if(!v){$('verr').textContent='Elige una opción, aunque sea «No lo sé».';return}
+ if(!v){$('verr').textContent='Elige una opción, aunque sea «Prefiero no decirlo».';return}
  if(!$('consent').checked){$('verr').textContent='Marca la casilla para dar tu consentimiento, o no envíes.';return}
  if(!ENDPOINT||ENDPOINT.indexOf('http')!==0){$('verr').textContent='El envío no está activado en esta versión de vista previa.';return}
  const r=LAST,top=r.ok[0];
