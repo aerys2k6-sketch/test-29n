@@ -125,6 +125,7 @@ summary{cursor:pointer;color:var(--acc)}
   <p class="eyebrow">Tus resultados</p>
   <h1 style="margin-top:8px">Los partidos más parecidos a ti</h1>
   <p class="muted small" id="rsum" style="margin-top:8px"></p>
+  <div class="callout hidden" id="fewwarn"></div>
   <div id="top"></div>
   <h2 style="margin-top:32px">El más distinto</h2>
   <div id="far"></div>
@@ -154,7 +155,7 @@ const D={"parties":[{"n":"PSOE","ab":"PSOE","col":"#D9443B","s":{"impuestos_rent
 const Q=D.questions,PS=D.parties;
 let i=0,ans={},touched=false;
 const $=id=>document.getElementById(id);
-const KEY='test29n_v2';const WT={1:0,2:1,3:2,4:3,5:4};
+const KEY='test29n_v2';const MIN_FIABLE=17;const WT={1:0,2:1,3:2,4:3,5:4};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(ans))}catch(e){}}
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
 $('nq').textContent=Q.length;
@@ -191,6 +192,7 @@ function finish(){const A=answered();
   const dist=sw?sd/sw:null;return{p,dist,aff:dist==null?null:Math.round(100-10*dist),n:it.length,it}});
  const ok=R.filter(r=>r.n>=need).sort((a,b)=>a.dist-b.dist),out=R.filter(r=>r.n<need);
  $('rsum').textContent=`Has respondido ${A.length} de ${Q.length} preguntas. Cada partido se compara solo en los temas en los que conocemos su posición.`;
+ const fw=$('fewwarn');if(A.length<MIN_FIABLE){fw.innerHTML=`<b>Has respondido pocas preguntas (${A.length} que cuentan) y el test puede fallar.</b> Con menos de ${MIN_FIABLE} respuestas el resultado es menos fiable. Para afinarlo, pulsa «Revisar respuestas» y contesta las que dejaste en «No lo sé» o con «1 · No me importa».`;fw.classList.remove('hidden')}else fw.classList.add('hidden');
  $('top').innerHTML='';ok.slice(0,3).forEach((r,k)=>$('top').appendChild(card(r,k+1,false)));
  $('far').innerHTML='';if(ok.length>3)$('far').appendChild(card(ok[ok.length-1],null,true));
  const mx=100;$('all').innerHTML='';ok.forEach(r=>{const d=document.createElement('div');d.className='rank';
