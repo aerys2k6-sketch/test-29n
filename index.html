@@ -37,7 +37,8 @@ input[type=range]{width:100%;accent-color:var(--acc);height:32px}
 .pill{display:inline-block;font-size:13px;font-weight:600;color:#FFFFFF;border-radius:999px;padding:2px 10px}
 .aff{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:600}
 .item{margin-top:10px;font-size:15px}.item q{color:var(--soft);font-style:italic}
-.rank{display:grid;grid-template-columns:70px 1fr 44px;gap:8px;align-items:center;font-size:14px;margin:6px 0}
+.rank{display:grid;grid-template-columns:42px 92px 1fr 34px;gap:8px;align-items:center;font-size:14px;margin:8px 0}.rank .pos{font-weight:600;color:var(--mute);white-space:nowrap;font-size:13px}.rank .nm b{display:block}.rank .nm small{display:block;font-size:11px;color:var(--mute)}.rank .nm small.part{color:var(--acc)}
+.tie{margin-top:10px;font-size:15px;line-height:1.45}.priv{margin-top:12px;font-size:13px;line-height:1.5}.priv summary{cursor:pointer;color:var(--acc)}.priv a{color:var(--acc)}.priv p{margin:8px 0 0}
 .rank .track{height:10px;background:var(--line);border-radius:5px;overflow:hidden}.rank .track div{height:100%}
 ol.steps{padding-left:20px;margin:8px 0}
 .hidden{display:none}
@@ -95,7 +96,7 @@ summary{cursor:pointer;color:var(--acc)}
       <li>Cada partido solo cuenta en los temas en los que se ha encontrado su posición; te indicamos en cuántos se ha comparado.</li>
       <li>Para ver resultados necesitas al menos 8 preguntas que cuenten, es decir, respondidas y con importancia de 2 a 5.</li>
     </ol>
-    <p class="small muted" style="margin:8px 0 0">No es una recomendación de voto: solo mide parecidos con los programas. Al final podrás enviar tus respuestas de forma anónima, solo si das tu consentimiento.</p>
+    <p class="small muted" style="margin:8px 0 0">No es una recomendación de voto: solo mide parecidos con los programas. Al final podrás enviar tus respuestas de forma anónima, solo si das tu consentimiento; allí tienes la información de privacidad.</p>
   </div>
   <p class="small muted" style="margin-top:14px">Partidos incluidos: <span id="plist"></span>.</p>
   <div class="row" style="margin-top:18px"><button class="primary" id="start">Empezar el test</button><button class="ghost hidden" id="resume">Seguir donde lo dejé</button></div>
@@ -125,21 +126,30 @@ summary{cursor:pointer;color:var(--acc)}
   <p class="eyebrow">Tus resultados</p>
   <h1 style="margin-top:8px">Los partidos más parecidos a ti</h1>
   <p class="muted small" id="rsum" style="margin-top:8px"></p>
+  <p class="tie hidden" id="tienote"></p>
   <div class="callout hidden" id="fewwarn"></div>
   <div id="top"></div>
   <h2 style="margin-top:32px">El más distinto</h2>
   <div id="far"></div>
   <h2 style="margin-top:32px">Todos los partidos</h2>
-  <p class="small muted">Afinidad = 100 − 10 × distancia media. 100 sería coincidir en todo.</p>
+  <p class="small muted">Afinidad = 100 − 10 × distancia media. 100 sería coincidir en todo. Debajo de cada partido, en cuántos de tus temas se ha podido comparar. Los partidos con el mismo puesto están empatados: entre ellos hay 2 puntos de afinidad o menos.</p>
   <div id="all" class="card" style="margin-top:10px"></div>
   <p class="small muted" id="excluded" style="margin-top:10px"></p>
   <div class="card vote" id="votecard">
     <h2>Una última pregunta</h2>
     <p class="small muted" style="margin:6px 0 0">¿A qué partido piensas votar el 29 de noviembre?</p>
     <select id="voto" aria-label="Partido al que piensas votar"><option value="">Elige una opción…</option></select>
-    <label class="chk"><input type="checkbox" id="consent"><span>Acepto que se guarden mis respuestas del test, el partido más afín y mi intención de voto <b>de forma anónima</b> (sin nombre, correo ni datos que me identifiquen) para un análisis estadístico.</span></label>
+    <label class="chk"><input type="checkbox" id="consent"><span>Acepto que se guarden mis respuestas del test, el partido más afín y mi intención de voto <b>de forma anónima</b> (sin nombre, correo ni datos que me identifiquen) para un análisis estadístico, en los términos de la información de privacidad de abajo.</span></label>
     <div class="row" style="margin-top:14px"><button class="primary" id="send">Enviar respuestas</button></div>
     <div class="err" id="verr"></div><div class="ok" id="vok" aria-live="polite"></div>
+    <details class="priv" id="priv"><summary>Información de privacidad</summary>
+      <p><b>Responsable:</b> Marcos Mencía Garcia · <a href="mailto:aerys2k6@gmail.com">aerys2k6@gmail.com</a>.</p>
+      <p><b>Para qué:</b> un análisis estadístico de las respuestas del test, por ejemplo comparar el partido más afín con la intención de voto declarada. No se usarán para enviarte nada ni para hacer perfiles individuales. Solo se publicarán resultados agregados, nunca respuestas individuales, y nunca entre el 24 y el 29 de noviembre de 2026.</p>
+      <p><b>Qué se guarda:</b> tus respuestas e importancias, las afinidades, el partido más afín, tu intención de voto, la fecha y un código aleatorio de envío. No se guardan tu nombre, tu correo ni tu dirección IP.</p>
+      <p><b>Base legal:</b> tu consentimiento explícito, que das al marcar la casilla (artículos 6.1.a y 9.2.a del RGPD), porque la intención de voto revela opiniones políticas.</p>
+      <p><b>Dónde y hasta cuándo:</b> en una hoja de cálculo de Google (Google Sheets), por lo que Google actúa como proveedor de almacenamiento. Se conservarán hasta el 31/07/2028 y después se borrarán.</p>
+      <p><b>Tus derechos:</b> puedes retirar tu consentimiento y pedir el acceso o el borrado de tus respuestas escribiendo al correo anterior con el código de tu envío, que aparece al enviar. Sin ese código no es posible localizarlas, porque no guardamos datos que te identifiquen. También puedes reclamar ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener">aepd.es</a>).</p>
+    </details>
   </div>
   <h2 style="margin-top:32px">Ver las posiciones de los partidos</h2>
   <p class="small muted">Elige uno o varios partidos para ver la nota que tienen en cada tema, junto a tu respuesta, y la cita en la que se apoya.</p>
@@ -155,7 +165,7 @@ const D={"parties":[{"n":"PSOE","ab":"PSOE","col":"#D9443B","s":{"impuestos_rent
 const Q=D.questions,PS=D.parties;
 let i=0,ans={},touched=false;
 const $=id=>document.getElementById(id);
-const KEY='test29n_v2';const MIN_FIABLE=17;const WT={1:0,2:1,3:2,4:3,5:4};
+const KEY='test29n_v2';const MIN_FIABLE=17;const EMPATE=2;const WT={1:0,2:1,3:2,4:3,5:4};
 function save(){try{localStorage.setItem(KEY,JSON.stringify(ans))}catch(e){}}
 function load(){try{return JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){return{}}}
 $('nq').textContent=Q.length;
@@ -191,12 +201,17 @@ function finish(){const A=answered();
  const R=PS.map(p=>{let sw=0,sd=0;const it=[];A.forEach(q=>{const s=p.s[q.id];if(!s)return;const a=ans[q.id],ww=WT[a.w],d=Math.abs(a.v-s[0]);sw+=ww;sd+=ww*d;it.push({q,u:a.v,p:s[0],c:s[1],src:s[2],d,w:ww})});
   const dist=sw?sd/sw:null;return{p,dist,aff:dist==null?null:Math.round(100-10*dist),n:it.length,it}});
  const ok=R.filter(r=>r.n>=need).sort((a,b)=>a.dist-b.dist),out=R.filter(r=>r.n<need);
- $('rsum').textContent=`Has respondido ${A.length} de ${Q.length} preguntas. Cada partido se compara solo en los temas en los que conocemos su posición.`;
+ const NC=Q.filter(q=>ans[q.id]&&ans[q.id].v!=null).length;
+ $('rsum').textContent=`Has contestado ${NC} de ${Q.length} preguntas y cuentan ${A.length} (las de «No lo sé» y las marcadas con «1 · No me importa» no cuentan). Cada partido se compara solo en los temas en los que conocemos su posición.`;
+ ok.forEach((r,i)=>{if(i&&ok[i-1].lead-r.aff<=EMPATE){r.pos=ok[i-1].pos;r.lead=ok[i-1].lead}else{r.pos=i+1;r.lead=r.aff}});
+ ok.forEach(r=>{r.tie=ok.some(o=>o!==r&&o.pos===r.pos)});
+ const tn=$('tienote'),t1=ok.filter(r=>r.pos===1);
+ if(t1.length>1){tn.innerHTML='';const b=document.createElement('b');b.textContent='Empate en el primer puesto: ';tn.appendChild(b);tn.appendChild(document.createTextNode(`${t1.map(r=>r.p.n).join(', ').replace(/, ([^,]*)$/,' y $1')} están a 2 puntos de afinidad o menos. Con diferencias tan pequeñas, el orden entre ${t1.length>2?'ellos':'los dos'} no es fiable.`));tn.classList.remove('hidden')}else tn.classList.add('hidden');
  const fw=$('fewwarn');if(A.length<MIN_FIABLE){fw.innerHTML=`<b>Has respondido pocas preguntas (${A.length} que cuentan) y el test puede fallar.</b> Con menos de ${MIN_FIABLE} respuestas el resultado es menos fiable. Para afinarlo, pulsa «Revisar respuestas» y contesta las que dejaste en «No lo sé» o con «1 · No me importa».`;fw.classList.remove('hidden')}else fw.classList.add('hidden');
  $('top').innerHTML='';ok.slice(0,3).forEach((r,k)=>$('top').appendChild(card(r,k+1,false)));
  $('far').innerHTML='';if(ok.length>3)$('far').appendChild(card(ok[ok.length-1],null,true));
  const mx=100;$('all').innerHTML='';ok.forEach(r=>{const d=document.createElement('div');d.className='rank';
-  d.innerHTML=`<span></span><div class="track"><div></div></div><b></b>`;d.children[0].textContent=r.p.ab;d.children[1].firstChild.style.width=Math.max(2,r.aff)+'%';d.children[1].firstChild.style.background=r.p.col;d.children[2].textContent=r.aff;$('all').appendChild(d)});
+  d.innerHTML=`<span class="pos"></span><span class="nm"><b></b><small></small></span><div class="track"><div></div></div><b></b>`;d.children[0].textContent=r.pos+'.º'+(r.tie?' =':'');d.children[1].firstChild.textContent=r.p.ab;const sm=d.children[1].lastChild;sm.textContent=`${r.n} de ${A.length} temas`;if(r.n<0.75*A.length){sm.className='part';sm.textContent+=' · parcial';sm.title='Comparado en menos del 75 % de tus temas'}d.children[2].firstChild.style.width=Math.max(1,r.aff)+'%';d.children[2].firstChild.style.background=r.p.col;d.children[3].textContent=r.aff;$('all').appendChild(d)});
  $('excluded').textContent=out.length?`Sin datos suficientes para compararte (tenemos su posición en menos de ${need} de tus temas): ${out.map(r=>r.p.n).join(', ')}.`:'';
  LAST={ok,n:A.length};resetVote();SEL=new Set(ok.slice(0,3).map(r=>r.p.ab));chips();renderCmp();
  show('results')}
@@ -224,32 +239,37 @@ function renderCmp(){const box=$('cmp');box.innerHTML='';const ps=PS.filter(p=>S
 const ENDPOINT='https://script.google.com/macros/s/AKfycby6UFrYQNCqnbpebHRzET6UKYC_CoXchSYDUaLRwUVF3d-p7Nqa6shc43gWl4GzUt9ycQ/exec';
 const VGRP=[['Partidos',PS.map(p=>p.n)],['Otras opciones',['Otro partido','No lo tengo claro todavía','No voy a votar','En blanco','Voto nulo','Prefiero no decirlo']]];
 VGRP.forEach(([lab,os])=>{const g=document.createElement('optgroup');g.label=lab;os.forEach(o=>{const e=document.createElement('option');e.value=o;e.textContent=o;g.appendChild(e)});$('voto').appendChild(g)});
-let LAST=null;
+let LAST=null,SENDID=null;
+function code(){return SENDID?SENDID.replace(/[^a-z0-9]/gi,'').slice(0,8).toUpperCase():''}
 function sentFlag(){try{return localStorage.getItem(KEY+'_sent')==='1'}catch(e){return false}}
-function setSent(){try{localStorage.setItem(KEY+'_sent','1')}catch(e){}}
+function setSent(){try{localStorage.setItem(KEY+'_sent','1');localStorage.setItem(KEY+'_code',code())}catch(e){}}
+function sentCode(){try{return localStorage.getItem(KEY+'_code')||''}catch(e){return ''}}
 $('voto').onchange=()=>$('verr').textContent='';$('consent').onchange=()=>$('verr').textContent='';
 $('send').onclick=async()=>{const v=$('voto').value;
  if(!v){$('verr').textContent='Elige una opción, aunque sea «Prefiero no decirlo».';return}
  if(!$('consent').checked){$('verr').textContent='Marca la casilla para dar tu consentimiento, o no envíes.';return}
  if(!ENDPOINT||ENDPOINT.indexOf('http')!==0){$('verr').textContent='El envío no está activado en esta versión de vista previa.';return}
  const r=LAST,top=r.ok[0];
- const pay={version:'29n-1',id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()),fecha:new Date().toISOString(),
+ if(!SENDID)SENDID=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2));
+ const pay={version:'29n-1',id:SENDID,fecha:new Date().toISOString(),
   voto:v,partido_mas_afin:top.p.n,afinidad_mas_afin:top.aff,coincide:(v===top.p.n)?'si':'no',
   ranking:r.ok.map(x=>x.p.ab+':'+x.aff).join('|'),n_respondidas:r.n};
  Q.forEach(q=>{const a=ans[q.id];pay['r_'+q.id]=(a&&a.v!=null)?a.v:'';pay['imp_'+q.id]=(a&&a.v!=null)?a.w:''});
  PS.forEach(p=>{const x=r.ok.find(y=>y.p.ab===p.ab);pay['afin_'+p.ab.replace(/[^A-Za-z0-9]/g,'')]=x?x.aff:''});
- $('send').disabled=true;$('send').textContent='Enviando…';
- try{await fetch(ENDPOINT,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(pay)});
-  setSent();$('vok').textContent='¡Gracias! Tus respuestas se han guardado de forma anónima.';$('send').textContent='Enviado'}
- catch(e){$('send').disabled=false;$('send').textContent='Enviar respuestas';$('verr').textContent='No se ha podido enviar. Comprueba la conexión y vuelve a intentarlo.'}};
-function resetVote(){$('vok').textContent='';$('verr').textContent='';if(sentFlag()){$('send').disabled=true;$('send').textContent='Ya enviado';$('vok').textContent='Ya enviaste tus respuestas desde este dispositivo. ¡Gracias!'}else{$('send').disabled=false;$('send').textContent='Enviar respuestas'}}
+ $('verr').textContent='';$('send').disabled=true;$('send').textContent='Enviando…';
+ try{const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(pay)});
+  const j=await res.json().catch(()=>null);
+  if(j&&j.ok){setSent();$('vok').textContent=`¡Gracias! Tus respuestas se han guardado de forma anónima. Código de tu envío: ${code()}. Guárdalo si algún día quieres pedir que se borren.`;$('send').textContent='Enviado'}
+  else{$('send').disabled=false;$('send').textContent='Enviar respuestas';$('verr').textContent='El servidor no ha confirmado que se hayan guardado tus respuestas. Vuelve a intentarlo dentro de un momento.'}}
+ catch(e){$('send').disabled=false;$('send').textContent='Enviar respuestas';$('verr').textContent='No hemos podido confirmar el envío. Comprueba la conexión y vuelve a intentarlo: si ya se hubiera guardado, no se contará dos veces.'}};
+function resetVote(){$('vok').textContent='';$('verr').textContent='';if(sentFlag()){$('send').disabled=true;$('send').textContent='Ya enviado';$('vok').textContent='Ya enviaste tus respuestas desde este dispositivo. ¡Gracias!'+(sentCode()?` Código de tu envío: ${sentCode()}.`:'')}else{$('send').disabled=false;$('send').textContent='Enviar respuestas'}}
 function line(x,label){const d=document.createElement('div');d.className='item';
  const t=document.createElement('div');t.innerHTML=`<b></b> <span class="muted"></span>`;t.firstChild.textContent=x.q.t;t.lastChild.textContent=`· tú ${x.u}, ${label} ${fmt(x.p)}`;
  const c=document.createElement('q');c.textContent=cut(x.c,170);const so=document.createElement('div');so.className='small muted';so.textContent='Fuente: '+x.src;d.appendChild(t);d.appendChild(c);d.appendChild(so);return d}
 function card(r,rank,far){const el=document.createElement('div');el.className='party';el.style.borderColor=r.p.col;
  const h=document.createElement('div');h.className='row';h.style.justifyContent='space-between';
  h.innerHTML=`<div><span class="pill"></span> <h3 style="display:inline;margin-left:6px"></h3></div><div style="text-align:right"><div class="aff"></div><div class="small muted">afinidad</div></div>`;
- h.querySelector('.pill').textContent=far?'Más distinto':`${rank}.º`;h.querySelector('.pill').style.background=r.p.col;h.querySelector('h3').textContent=r.p.n;h.querySelector('.aff').textContent=r.aff;el.appendChild(h);
+ h.querySelector('.pill').textContent=far?'Más distinto':`${r.pos}.º${r.tie?' · empate':''}`;h.querySelector('.pill').style.background=r.p.col;h.querySelector('h3').textContent=r.p.n;h.querySelector('.aff').textContent=r.aff;el.appendChild(h);
  const m=document.createElement('p');m.className='small muted';m.style.margin='6px 0 0';m.textContent=`Distancia media ${fmt(r.dist)} sobre 10 · comparado en ${r.n} temas`;el.appendChild(m);
  const byGap=[...r.it].sort((a,b)=>b.d*b.w-a.d*a.w),byNear=[...r.it].sort((a,b)=>a.d-b.d||b.w-a.w);
  const near=byNear.filter(x=>x.d<=2).slice(0,far?1:3),gap=byGap.filter(x=>x.d>=3).slice(0,far?3:2);
