@@ -41,7 +41,7 @@ input[type=range]{width:100%;accent-color:var(--acc);height:32px}
 .tie{margin-top:10px;font-size:15px;line-height:1.45}.priv{margin-top:12px;font-size:13px;line-height:1.5}.priv summary{cursor:pointer;color:var(--acc)}.priv a{color:var(--acc)}.priv p{margin:8px 0 0}
 .rank .track{height:10px;background:var(--line);border-radius:5px;overflow:hidden}.rank .track div{height:100%}
 ol.steps{padding-left:20px;margin:8px 0}
-.hidden{display:none}
+.hidden{display:none!important}
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
 .chip{font-size:14px;padding:6px 12px;border-radius:999px;border:1.5px solid;background:transparent}
 .chip[aria-pressed=true]{color:#FFFFFF}
@@ -96,7 +96,19 @@ summary{cursor:pointer;color:var(--acc)}
       <li>Cada partido solo cuenta en los temas en los que se ha encontrado su posición; te indicamos en cuántos se ha comparado.</li>
       <li>Para ver resultados necesitas al menos 8 preguntas que cuenten, es decir, respondidas y con importancia de 2 a 5.</li>
     </ol>
-    <p class="small muted" style="margin:8px 0 0">No es una recomendación de voto: solo mide parecidos con los programas. Al final podrás enviar tus respuestas de forma anónima, solo si das tu consentimiento; allí tienes la información de privacidad.</p>
+    <p class="small muted" style="margin:8px 0 0">No es una recomendación de voto: solo mide parecidos con los programas. Tus respuestas solo se guardan si lo aceptas en la casilla de abajo.</p>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <label class="chk" style="margin-top:0"><input type="checkbox" id="consent0"><span>Acepto que, al ver mis resultados, se guarden <b>de forma anónima</b> (sin nombre, correo ni datos que me identifiquen) mis respuestas del test y el partido más afín, y mi intención de voto si la envío al final, para un análisis estadístico, en los términos de la información de privacidad.</span></label>
+    <p class="small muted" style="margin:8px 0 0">Es opcional: si no la marcas, puedes hacer el test igual y no se guarda nada.</p>
+    <details class="priv" id="priv"><summary>Información de privacidad</summary>
+      <p><b>Responsable:</b> Marcos Mencía Garcia · <a href="mailto:aerys2k6@gmail.com">aerys2k6@gmail.com</a>.</p>
+      <p><b>Para qué:</b> un análisis estadístico de las respuestas del test, por ejemplo comparar el partido más afín con la intención de voto declarada. No se usarán para enviarte nada ni para hacer perfiles individuales. Solo se publicarán resultados agregados, nunca respuestas individuales, y nunca entre el 24 y el 29 de noviembre de 2026.</p>
+      <p><b>Qué se guarda:</b> tus respuestas e importancias, las afinidades, el partido más afín, la fecha y un código aleatorio. Se guardan al mostrarse tus resultados, con la intención de voto en «Prefiero no decirlo». Si al final envías tu intención de voto, se actualiza esa misma fila: no se guarda dos veces. No se guardan tu nombre, tu correo ni tu dirección IP.</p>
+      <p><b>Base legal:</b> tu consentimiento explícito, que das al marcar la casilla, al empezar o al final del test (artículos 6.1.a y 9.2.a del RGPD), porque la intención de voto revela opiniones políticas.</p>
+      <p><b>Dónde y hasta cuándo:</b> en una hoja de cálculo de Google (Google Sheets), por lo que Google actúa como proveedor de almacenamiento. Se conservarán hasta el 31/07/2028 y después se borrarán.</p>
+      <p><b>Tus derechos:</b> puedes retirar tu consentimiento y pedir el acceso o el borrado de tus respuestas escribiendo al correo anterior con tu código, que aparece en la página de resultados. Sin ese código no es posible localizarlas, porque no guardamos datos que te identifiquen. También puedes reclamar ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener">aepd.es</a>).</p>
+    </details>
   </div>
   <p class="small muted" style="margin-top:14px">Partidos incluidos: <span id="plist"></span>.</p>
   <div class="row" style="margin-top:18px"><button class="primary" id="start">Empezar el test</button><button class="ghost hidden" id="resume">Seguir donde lo dejé</button></div>
@@ -126,6 +138,7 @@ summary{cursor:pointer;color:var(--acc)}
   <p class="eyebrow">Tus resultados</p>
   <h1 style="margin-top:8px">Los partidos más parecidos a ti</h1>
   <p class="muted small" id="rsum" style="margin-top:8px"></p>
+  <p class="small hidden" id="savenote" aria-live="polite" style="margin-top:8px"></p>
   <p class="tie hidden" id="tienote"></p>
   <div class="callout hidden" id="fewwarn"></div>
   <div id="top"></div>
@@ -139,17 +152,11 @@ summary{cursor:pointer;color:var(--acc)}
     <h2>Una última pregunta</h2>
     <p class="small muted" style="margin:6px 0 0">¿A qué partido piensas votar el 29 de noviembre?</p>
     <select id="voto" aria-label="Partido al que piensas votar"><option value="">Elige una opción…</option></select>
-    <label class="chk"><input type="checkbox" id="consent"><span>Acepto que se guarden mis respuestas del test, el partido más afín y mi intención de voto <b>de forma anónima</b> (sin nombre, correo ni datos que me identifiquen) para un análisis estadístico, en los términos de la información de privacidad de abajo.</span></label>
+    <p class="small muted hidden" id="consentok" style="margin:10px 0 0">Diste tu consentimiento al empezar: tu intención de voto se añadirá a tus respuestas ya guardadas.</p>
+    <label class="chk" id="consentlab"><input type="checkbox" id="consent"><span>Acepto que se guarden mis respuestas del test, el partido más afín y mi intención de voto <b>de forma anónima</b> (sin nombre, correo ni datos que me identifiquen) para un análisis estadístico, en los términos de la información de privacidad de abajo.</span></label>
     <div class="row" style="margin-top:14px"><button class="primary" id="send">Enviar respuestas</button></div>
     <div class="err" id="verr"></div><div class="ok" id="vok" aria-live="polite"></div>
-    <details class="priv" id="priv"><summary>Información de privacidad</summary>
-      <p><b>Responsable:</b> Marcos Mencía Garcia · <a href="mailto:aerys2k6@gmail.com">aerys2k6@gmail.com</a>.</p>
-      <p><b>Para qué:</b> un análisis estadístico de las respuestas del test, por ejemplo comparar el partido más afín con la intención de voto declarada. No se usarán para enviarte nada ni para hacer perfiles individuales. Solo se publicarán resultados agregados, nunca respuestas individuales, y nunca entre el 24 y el 29 de noviembre de 2026.</p>
-      <p><b>Qué se guarda:</b> tus respuestas e importancias, las afinidades, el partido más afín, tu intención de voto, la fecha y un código aleatorio de envío. No se guardan tu nombre, tu correo ni tu dirección IP.</p>
-      <p><b>Base legal:</b> tu consentimiento explícito, que das al marcar la casilla (artículos 6.1.a y 9.2.a del RGPD), porque la intención de voto revela opiniones políticas.</p>
-      <p><b>Dónde y hasta cuándo:</b> en una hoja de cálculo de Google (Google Sheets), por lo que Google actúa como proveedor de almacenamiento. Se conservarán hasta el 31/07/2028 y después se borrarán.</p>
-      <p><b>Tus derechos:</b> puedes retirar tu consentimiento y pedir el acceso o el borrado de tus respuestas escribiendo al correo anterior con el código de tu envío, que aparece al enviar. Sin ese código no es posible localizarlas, porque no guardamos datos que te identifiquen. También puedes reclamar ante la Agencia Española de Protección de Datos (<a href="https://www.aepd.es" target="_blank" rel="noopener">aepd.es</a>).</p>
-    </details>
+    <div id="privslot"></div>
   </div>
   <h2 style="margin-top:32px">Ver las posiciones de los partidos</h2>
   <p class="small muted">Elige uno o varios partidos para ver la nota que tienen en cada tema, junto a tu respuesta, y la cita en la que se apoya.</p>
@@ -214,7 +221,7 @@ function finish(){const A=answered();
   d.innerHTML=`<span class="pos"></span><span class="nm"><b></b><small></small></span><div class="track"><div></div></div><b></b>`;d.children[0].textContent=r.pos+'.º'+(r.tie?' =':'');d.children[1].firstChild.textContent=r.p.ab;const sm=d.children[1].lastChild;sm.textContent=`${r.n} de ${A.length} temas`;if(r.n<0.75*A.length){sm.className='part';sm.textContent+=' · parcial';sm.title='Comparado en menos del 75 % de tus temas'}d.children[2].firstChild.style.width=Math.max(1,r.aff)+'%';d.children[2].firstChild.style.background=r.p.col;d.children[3].textContent=r.aff;$('all').appendChild(d)});
  $('excluded').textContent=out.length?`Sin datos suficientes para compararte (tenemos su posición en menos de ${need} de tus temas): ${out.map(r=>r.p.n).join(', ')}.`:'';
  LAST={ok,n:A.length};resetVote();SEL=new Set(ok.slice(0,3).map(r=>r.p.ab));chips();renderCmp();
- show('results')}
+ show('results');autoSave()}
 
 let SEL=new Set();
 function chips(){const c=$('chips');c.innerHTML='';PS.forEach(p=>{const b=document.createElement('button');b.className='chip';b.textContent=p.n;b.style.borderColor=p.col;const on=SEL.has(p.ab);b.setAttribute('aria-pressed',String(on));b.style.background=on?p.col:'transparent';b.style.color=on?'#FFFFFF':'var(--ink)';b.onclick=()=>{SEL.has(p.ab)?SEL.delete(p.ab):SEL.add(p.ab);chips();renderCmp()};c.appendChild(b)})}
@@ -239,30 +246,45 @@ function renderCmp(){const box=$('cmp');box.innerHTML='';const ps=PS.filter(p=>S
 const ENDPOINT='https://script.google.com/macros/s/AKfycby6UFrYQNCqnbpebHRzET6UKYC_CoXchSYDUaLRwUVF3d-p7Nqa6shc43gWl4GzUt9ycQ/exec';
 const VGRP=[['Partidos',PS.map(p=>p.n)],['Otras opciones',['Otro partido','No lo tengo claro todavía','No voy a votar','En blanco','Voto nulo','Prefiero no decirlo']]];
 VGRP.forEach(([lab,os])=>{const g=document.createElement('optgroup');g.label=lab;os.forEach(o=>{const e=document.createElement('option');e.value=o;e.textContent=o;g.appendChild(e)});$('voto').appendChild(g)});
-let LAST=null,SENDID=null;
-function code(){return SENDID?SENDID.replace(/[^a-z0-9]/gi,'').slice(0,8).toUpperCase():''}
-function sentFlag(){try{return localStorage.getItem(KEY+'_sent')==='1'}catch(e){return false}}
-function setSent(){try{localStorage.setItem(KEY+'_sent','1');localStorage.setItem(KEY+'_code',code())}catch(e){}}
-function sentCode(){try{return localStorage.getItem(KEY+'_code')||''}catch(e){return ''}}
-$('voto').onchange=()=>$('verr').textContent='';$('consent').onchange=()=>$('verr').textContent='';
-$('send').onclick=async()=>{const v=$('voto').value;
- if(!v){$('verr').textContent='Elige una opción, aunque sea «Prefiero no decirlo».';return}
- if(!$('consent').checked){$('verr').textContent='Marca la casilla para dar tu consentimiento, o no envíes.';return}
- if(!ENDPOINT||ENDPOINT.indexOf('http')!==0){$('verr').textContent='El envío no está activado en esta versión de vista previa.';return}
- const r=LAST,top=r.ok[0];
- if(!SENDID)SENDID=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2));
- const pay={version:'29n-1',id:SENDID,fecha:new Date().toISOString(),
-  voto:v,partido_mas_afin:top.p.n,afinidad_mas_afin:top.aff,coincide:(v===top.p.n)?'si':'no',
+let LAST=null;
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(KEY+k);if(v===null)localStorage.removeItem(KEY+k);else localStorage.setItem(KEY+k,v)}catch(e){return null}}
+function sendId(){let id=ls('_id');if(!id){id=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2));ls('_id',id)}return id}
+function code(){const id=ls('_id');return id?id.replace(/[^a-z0-9]/gi,'').slice(0,8).toUpperCase():''}
+function sentFlag(){return ls('_sent')==='1'}
+function consentGiven(){return ls('_consent')==='1'}
+function canSend(){return !!ENDPOINT&&ENDPOINT.indexOf('http')===0}
+$('consent0').checked=consentGiven();
+$('consent0').onchange=()=>ls('_consent',$('consent0').checked?'1':null);
+{const pv=$('priv').cloneNode(true);pv.removeAttribute('id');$('privslot').appendChild(pv)}
+function buildPay(voto,enviado,origen){const r=LAST,top=r.ok[0];
+ const pay={version:'29n-1',id:sendId(),fecha:new Date().toISOString(),
+  voto:voto,voto_enviado:enviado,consentimiento:origen,partido_mas_afin:top.p.n,afinidad_mas_afin:top.aff,coincide:(voto===top.p.n)?'si':'no',
   ranking:r.ok.map(x=>x.p.ab+':'+x.aff).join('|'),n_respondidas:r.n};
  Q.forEach(q=>{const a=ans[q.id];pay['r_'+q.id]=(a&&a.v!=null)?a.v:'';pay['imp_'+q.id]=(a&&a.v!=null)?a.w:''});
  PS.forEach(p=>{const x=r.ok.find(y=>y.p.ab===p.ab);pay['afin_'+p.ab.replace(/[^A-Za-z0-9]/g,'')]=x?x.aff:''});
+ return pay}
+async function post(pay){const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(pay)});const j=await res.json().catch(()=>null);return !!(j&&j.ok)}
+function note(txt){const n=$('savenote');n.textContent=txt;n.classList.toggle('hidden',!txt)}
+const NOSAVE='No hemos podido guardar tus respuestas ahora. Si envías tu intención de voto abajo, se guardarán junto a ella.';
+async function autoSave(){
+ if(!consentGiven()||!canSend()){note('');return}
+ if(sentFlag()){note(`Ya enviaste tus respuestas desde este dispositivo, así que estos resultados no se vuelven a guardar. Tu código: ${code()}.`);return}
+ note('Guardando tus respuestas de forma anónima…');
+ try{if(await post(buildPay('Prefiero no decirlo','no','inicio'))){if(!sentFlag())note(`Tus respuestas se han guardado de forma anónima. Tu código: ${code()}. Guárdalo si algún día quieres pedir que se borren.`)}else note(NOSAVE)}
+ catch(e){note(NOSAVE)}}
+$('voto').onchange=()=>$('verr').textContent='';$('consent').onchange=()=>$('verr').textContent='';
+$('send').onclick=async()=>{const v=$('voto').value,pre=consentGiven();
+ if(!v){$('verr').textContent='Elige una opción, aunque sea «Prefiero no decirlo».';return}
+ if(!pre&&!$('consent').checked){$('verr').textContent='Marca la casilla para dar tu consentimiento, o no envíes.';return}
+ if(!canSend()){$('verr').textContent='El envío no está activado en esta versión de vista previa.';return}
+ const pay=buildPay(v,'si',pre?'inicio':'final');
  $('verr').textContent='';$('send').disabled=true;$('send').textContent='Enviando…';
- try{const res=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(pay)});
-  const j=await res.json().catch(()=>null);
-  if(j&&j.ok){setSent();$('vok').textContent=`¡Gracias! Tus respuestas se han guardado de forma anónima. Código de tu envío: ${code()}. Guárdalo si algún día quieres pedir que se borren.`;$('send').textContent='Enviado'}
-  else{$('send').disabled=false;$('send').textContent='Enviar respuestas';$('verr').textContent='El servidor no ha confirmado que se hayan guardado tus respuestas. Vuelve a intentarlo dentro de un momento.'}}
+ try{if(await post(pay)){ls('_sent','1');ls('_code',code());note('');$('vok').textContent=`¡Gracias! Tu intención de voto se ha guardado de forma anónima${pre?', en la misma fila que tus respuestas':''}. Tu código: ${code()}. Guárdalo si algún día quieres pedir que se borren.`;$('send').textContent='Enviado';$('consentlab').classList.add('hidden');$('consentok').classList.add('hidden')}
+  else{$('send').disabled=false;$('send').textContent='Enviar respuestas';$('verr').textContent='El servidor no ha confirmado que se haya guardado. Vuelve a intentarlo dentro de un momento.'}}
  catch(e){$('send').disabled=false;$('send').textContent='Enviar respuestas';$('verr').textContent='No hemos podido confirmar el envío. Comprueba la conexión y vuelve a intentarlo: si ya se hubiera guardado, no se contará dos veces.'}};
-function resetVote(){$('vok').textContent='';$('verr').textContent='';if(sentFlag()){$('send').disabled=true;$('send').textContent='Ya enviado';$('vok').textContent='Ya enviaste tus respuestas desde este dispositivo. ¡Gracias!'+(sentCode()?` Código de tu envío: ${sentCode()}.`:'')}else{$('send').disabled=false;$('send').textContent='Enviar respuestas'}}
+function resetVote(){$('vok').textContent='';$('verr').textContent='';const pre=consentGiven(),s=sentFlag();
+ $('consentok').classList.toggle('hidden',!pre||s);$('consentlab').classList.toggle('hidden',pre||s);
+ if(s){$('send').disabled=true;$('send').textContent='Ya enviado';$('vok').textContent='Ya enviaste tus respuestas desde este dispositivo. ¡Gracias!'+(ls('_code')?` Tu código: ${ls('_code')}.`:'')}else{$('send').disabled=false;$('send').textContent='Enviar respuestas'}}
 function line(x,label){const d=document.createElement('div');d.className='item';
  const t=document.createElement('div');t.innerHTML=`<b></b> <span class="muted"></span>`;t.firstChild.textContent=x.q.t;t.lastChild.textContent=`· tú ${x.u}, ${label} ${fmt(x.p)}`;
  const c=document.createElement('q');c.textContent=cut(x.c,170);const so=document.createElement('div');so.className='small muted';so.textContent='Fuente: '+x.src;d.appendChild(t);d.appendChild(c);d.appendChild(so);return d}
