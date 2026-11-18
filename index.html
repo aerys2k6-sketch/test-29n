@@ -58,6 +58,8 @@ summary{cursor:pointer;color:var(--acc)}
 .vote label.chk{display:flex;gap:10px;align-items:flex-start;font-size:14px;color:var(--soft);margin-top:12px}
 .vote input[type=checkbox]{width:20px;height:20px;accent-color:var(--acc);flex:none;margin-top:1px}
 .ok{color:#8FD694;font-size:15px;margin-top:10px}
+.howto p,.howto li{color:var(--ink)}.howlist{margin:6px 0 0;padding-left:18px}.howlist li{margin:4px 0}
+.callout{margin-top:14px;padding:12px 14px;border:2px solid var(--acc);border-left-width:6px;border-radius:10px;background:var(--card2);color:var(--ink);font-size:15px;line-height:1.45}.callout b{color:#fff}
 </style>
 </head>
 <body>
@@ -66,13 +68,32 @@ summary{cursor:pointer;color:var(--acc)}
   <p class="eyebrow">Elecciones generales · 29 de noviembre de 2026</p>
   <h1 style="margin-top:8px">¿Qué partido piensa como tú?</h1>
   <p class="muted" style="margin-top:12px">Responde a <b id="nq"></b> preguntas sobre temas concretos. Para cada una, sitúate entre dos posturas en una escala de 0 a 10 y di cuánto te importa. Compararemos tus respuestas con lo que dice el programa electoral de cada partido.</p>
-  <div class="card" style="margin-top:18px">
+  <div class="card howto" style="margin-top:18px">
+    <h3>Cómo responder</h3>
+    <p class="small"><b>La línea del 0 al 10.</b> En cada pregunta hay dos posturas, una en cada extremo, marcadas como 0 y 10. Mueve el punto hasta donde estés tú:</p>
+    <ul class="small howlist">
+      <li><b>0</b>: estás totalmente de acuerdo con la postura del 0.</li>
+      <li><b>10</b>: estás totalmente de acuerdo con la postura del 10.</li>
+      <li><b>Entre 1 y 9</b>: te acercas a una de las dos con matices. Cuanto más cerca del extremo, más de acuerdo.</li>
+      <li><b>5</b>: estás justo en medio. Es una postura, no un «no sé», y cuenta para el resultado.</li>
+    </ul>
+    <p class="small" style="margin-top:12px"><b>Los 5 botones de abajo.</b> Indican cuánto te importa ese tema. Cuanto más te importa, más pesa en tu resultado:</p>
+    <ul class="small howlist">
+      <li><b>1 · No me importa</b>: no cuenta.</li>
+      <li><b>2 · Me importa poco</b>: cuenta 1 vez.</li>
+      <li><b>3 · Me importa</b>: cuenta 2 veces. Es la opción marcada por defecto.</li>
+      <li><b>4 · Me importa mucho</b>: cuenta 3 veces.</li>
+      <li><b>5 · Importancia principal</b>: cuenta 4 veces.</li>
+    </ul>
+    <div class="callout"><b>«No lo sé» y «1 · No me importa» son respuestas válidas.</b> Si no tienes opinión sobre un tema, pulsa «No lo sé». Si no te importa, marca «1 · No me importa». En los dos casos esa pregunta no cuenta para tu resultado. <b>No uses el 5 para decir que no lo sabes:</b> el 5 sí cuenta como postura intermedia.</div>
+  </div>
+  <div class="card" style="margin-top:14px">
     <h3>Cómo funciona</h3>
     <ol class="steps muted small">
       <li>Cada partido tiene una nota de 0 a 10 en cada tema, apoyada en una cita. La fuente es su programa del 29N; si el programa no dice nada, se usan, por este orden, declaraciones oficiales, su programa anterior y entrevistas.</li>
       <li>Para cada partido calculamos la distancia media entre tu respuesta y su nota, ponderada por lo que te importa cada tema.</li>
       <li>Cada partido solo cuenta en los temas en los que se ha encontrado su posición; te indicamos en cuántos se ha comparado.</li>
-      <li>En cada tema eliges su importancia de 1 a 5: «1 · No me importa» no cuenta, y cada nivel pesa más que el anterior (de 1 a 4 veces).</li><li>Puedes saltar las preguntas que no tengas claras. Necesitas responder al menos 8.</li>
+      <li>Para ver resultados necesitas al menos 8 preguntas que cuenten, es decir, respondidas y con importancia de 2 a 5.</li>
     </ol>
     <p class="small muted" style="margin:8px 0 0">No es una recomendación de voto: solo mide parecidos con los programas. Al final podrás enviar tus respuestas de forma anónima, solo si das tu consentimiento.</p>
   </div>
@@ -94,7 +115,7 @@ summary{cursor:pointer;color:var(--acc)}
   </div>
   <div class="row" style="justify-content:space-between;margin-top:16px">
     <button class="ghost" id="prev">← Anterior</button>
-    <div class="row"><button id="skip">Saltar</button><button class="primary" id="next">Siguiente</button></div>
+    <div class="row"><button id="skip">No lo sé</button><button class="primary" id="next">Siguiente</button></div>
   </div>
   <div class="row" style="justify-content:flex-end;margin-top:6px"><button class="ghost small" id="finish">Ver resultados ya</button></div>
   <div class="err" id="ferr" style="text-align:right"></div>
@@ -151,7 +172,7 @@ function curW(){const b=document.querySelector('.seg button[aria-pressed=true]')
 $('slider').addEventListener('input',()=>{touched=true;$('val').textContent=$('slider').value;$('qerr').textContent=''});
 document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{setW(+b.dataset.w);const q=Q[i];if(ans[q.id]&&ans[q.id].v!=null){ans[q.id].w=+b.dataset.w;save()}}));
 function advance(){if(i<Q.length-1){i++;render()}else finish()}
-$('next').onclick=()=>{if(!touched){$('qerr').textContent='Mueve el control para elegir tu posición, o pulsa «Saltar».';return}
+$('next').onclick=()=>{if(!touched){$('qerr').textContent='Mueve el control para elegir tu posición, o pulsa «No lo sé».';return}
  ans[Q[i].id]={v:+$('slider').value,w:curW()};save();advance()};
 $('skip').onclick=()=>{ans[Q[i].id]={v:null};save();advance()};
 $('prev').onclick=()=>{if(i>0){i--;render()}};
@@ -164,7 +185,7 @@ function answered(){return Q.filter(q=>ans[q.id]&&ans[q.id].v!=null&&ans[q.id].w
 function fmt(x){return(Math.round(x*10)/10).toString().replace('.',',')}
 function cut(s,n){return s.length>n?s.slice(0,n).replace(/\s+\S*$/,'')+'…':s}
 function finish(){const A=answered();
- if(A.length<8){show('quiz');render();$('ferr').textContent=`Llevas ${A.length} respuestas: necesitas al menos 8 (sin contar las marcadas con «1 · No me importa») para ver resultados.`;return}
+ if(A.length<8){show('quiz');render();$('ferr').textContent=`Llevas ${A.length} respuestas: necesitas al menos 8 (sin contar las de «No lo sé» ni las marcadas con «1 · No me importa») para ver resultados.`;return}
  const need=Math.max(4,Math.ceil(A.length/2));
  const R=PS.map(p=>{let sw=0,sd=0;const it=[];A.forEach(q=>{const s=p.s[q.id];if(!s)return;const a=ans[q.id],ww=WT[a.w],d=Math.abs(a.v-s[0]);sw+=ww;sd+=ww*d;it.push({q,u:a.v,p:s[0],c:s[1],src:s[2],d,w:ww})});
   const dist=sw?sd/sw:null;return{p,dist,aff:dist==null?null:Math.round(100-10*dist),n:it.length,it}});
@@ -199,14 +220,14 @@ function renderCmp(){const box=$('cmp');box.innerHTML='';const ps=PS.filter(p=>S
   box.appendChild(d)})}
 
 const ENDPOINT='https://script.google.com/macros/s/AKfycby6UFrYQNCqnbpebHRzET6UKYC_CoXchSYDUaLRwUVF3d-p7Nqa6shc43gWl4GzUt9ycQ/exec';
-const VOPTS=PS.map(p=>p.n).concat(['Otro partido','Voto en blanco','Voto nulo','No votaré','Aún no lo sé','Prefiero no decirlo']);
-VOPTS.forEach(o=>{const e=document.createElement('option');e.value=o;e.textContent=o;$('voto').appendChild(e)});
+const VGRP=[['Partidos',PS.map(p=>p.n).concat(['Otro partido'])],['Si no vas a votar a un partido',['No lo sé','No voy a votar','En blanco']]];
+VGRP.forEach(([lab,os])=>{const g=document.createElement('optgroup');g.label=lab;os.forEach(o=>{const e=document.createElement('option');e.value=o;e.textContent=o;g.appendChild(e)});$('voto').appendChild(g)});
 let LAST=null;
 function sentFlag(){try{return localStorage.getItem(KEY+'_sent')==='1'}catch(e){return false}}
 function setSent(){try{localStorage.setItem(KEY+'_sent','1')}catch(e){}}
 $('voto').onchange=()=>$('verr').textContent='';$('consent').onchange=()=>$('verr').textContent='';
 $('send').onclick=async()=>{const v=$('voto').value;
- if(!v){$('verr').textContent='Elige una opción, aunque sea «Prefiero no decirlo».';return}
+ if(!v){$('verr').textContent='Elige una opción, aunque sea «No lo sé».';return}
  if(!$('consent').checked){$('verr').textContent='Marca la casilla para dar tu consentimiento, o no envíes.';return}
  if(!ENDPOINT||ENDPOINT.indexOf('http')!==0){$('verr').textContent='El envío no está activado en esta versión de vista previa.';return}
  const r=LAST,top=r.ok[0];
