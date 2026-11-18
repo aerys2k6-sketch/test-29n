@@ -258,7 +258,7 @@ $('consent0').checked=consentGiven();
 $('consent0').onchange=()=>ls('_consent',$('consent0').checked?'1':null);
 {const pv=$('priv').cloneNode(true);pv.removeAttribute('id');$('privslot').appendChild(pv)}
 function buildPay(voto,enviado,origen){const r=LAST,top=r.ok[0];
- const pay={version:'29n-1',id:sendId(),fecha:new Date().toISOString(),
+ const pay={version:'29n-2',id:sendId(),fecha:new Date().toISOString(),
   voto:voto,voto_enviado:enviado,consentimiento:origen,partido_mas_afin:top.p.n,afinidad_mas_afin:top.aff,coincide:(voto===top.p.n)?'si':'no',
   ranking:r.ok.map(x=>x.p.ab+':'+x.aff).join('|'),n_respondidas:r.n};
  Q.forEach(q=>{const a=ans[q.id];pay['r_'+q.id]=(a&&a.v!=null)?a.v:'';pay['imp_'+q.id]=(a&&a.v!=null)?a.w:''});
