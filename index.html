@@ -139,6 +139,7 @@ summary{cursor:pointer;color:var(--acc)}
   <h1 style="margin-top:8px">Los partidos más parecidos a ti</h1>
   <p class="muted small" id="rsum" style="margin-top:8px"></p>
   <p class="small hidden" id="savenote" aria-live="polite" style="margin-top:8px"></p>
+  <div class="callout hidden" id="votereminder"><b>No olvides la última pregunta:</b> ¿a qué partido piensas votar el 29 de noviembre? Está más abajo, después de la lista de partidos, y se responde en un momento. <button class="primary small" id="govote" style="margin-top:8px">Ir a la pregunta ↓</button></div>
   <p class="tie hidden" id="tienote"></p>
   <div class="callout hidden" id="fewwarn"></div>
   <div id="top"></div>
@@ -279,10 +280,11 @@ $('send').onclick=async()=>{const v=$('voto').value,pre=consentGiven();
  if(!canSend()){$('verr').textContent='El envío no está activado en esta versión de vista previa.';return}
  const pay=buildPay(v,'si',pre?'inicio':'final');
  $('verr').textContent='';$('send').disabled=true;$('send').textContent='Enviando…';
- try{if(await post(pay)){ls('_sent','1');ls('_code',code());note('');$('vok').textContent=`¡Gracias! Tu intención de voto se ha guardado de forma anónima${pre?', en la misma fila que tus respuestas':''}. Tu código: ${code()}. Guárdalo si algún día quieres pedir que se borren.`;$('send').textContent='Enviado';$('consentlab').classList.add('hidden');$('consentok').classList.add('hidden')}
+ try{if(await post(pay)){ls('_sent','1');ls('_code',code());note('');$('vok').textContent=`¡Gracias! Tu intención de voto se ha guardado de forma anónima${pre?', en la misma fila que tus respuestas':''}. Tu código: ${code()}. Guárdalo si algún día quieres pedir que se borren.`;$('send').textContent='Enviado';$('votereminder').classList.add('hidden');$('consentlab').classList.add('hidden');$('consentok').classList.add('hidden')}
   else{$('send').disabled=false;$('send').textContent='Enviar respuestas';$('verr').textContent='El servidor no ha confirmado que se haya guardado. Vuelve a intentarlo dentro de un momento.'}}
  catch(e){$('send').disabled=false;$('send').textContent='Enviar respuestas';$('verr').textContent='No hemos podido confirmar el envío. Comprueba la conexión y vuelve a intentarlo: si ya se hubiera guardado, no se contará dos veces.'}};
-function resetVote(){$('vok').textContent='';$('verr').textContent='';const pre=consentGiven(),s=sentFlag();
+$('govote').onclick=()=>{$('votecard').scrollIntoView({behavior:'smooth',block:'start'});setTimeout(()=>$('voto').focus({preventScroll:true}),400)};
+function resetVote(){$('vok').textContent='';$('verr').textContent='';const pre=consentGiven(),s=sentFlag();$('votereminder').classList.toggle('hidden',s);
  $('consentok').classList.toggle('hidden',!pre||s);$('consentlab').classList.toggle('hidden',pre||s);
  if(s){$('send').disabled=true;$('send').textContent='Ya enviado';$('vok').textContent='Ya enviaste tus respuestas desde este dispositivo. ¡Gracias!'+(ls('_code')?` Tu código: ${ls('_code')}.`:'')}else{$('send').disabled=false;$('send').textContent='Enviar respuestas'}}
 function line(x,label){const d=document.createElement('div');d.className='item';
