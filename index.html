@@ -24,7 +24,7 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--acc);outline-of
 .poles{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 8px}
 .pole{border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:15px;background:var(--card2)}
 .pole b{display:block;font-size:13px;color:var(--mute);font-weight:600}
-input[type=range]{width:100%;accent-color:var(--acc);height:32px}
+input[type=range]{width:100%;accent-color:var(--acc);height:32px}#slider.untouched{accent-color:#8a93a6;opacity:.45}.shint{margin:2px 0 0;text-align:center}
 .ticks{display:flex;justify-content:space-between;font-size:12px;color:var(--mute);padding:0 4px}
 .val{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:600;min-width:2ch;text-align:center}
 .seg{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));border:1px solid var(--ink);border-radius:10px;overflow:hidden}
@@ -122,6 +122,7 @@ summary{cursor:pointer;color:var(--acc)}
     <div class="poles"><div class="pole"><b>0</b><span id="p0"></span></div><div class="pole"><b>10</b><span id="p10"></span></div></div>
     <div class="row" style="gap:14px;margin-top:6px"><input type="range" min="0" max="10" step="1" id="slider" aria-label="Tu posición de 0 a 10"><span class="val" id="val" aria-live="polite">–</span></div>
     <div class="ticks"><span>0</span><span>5</span><span>10</span></div>
+    <p class="small muted shint" id="shint">Sin responder: toca o arrastra en la línea para marcar tu posición (también el 5).</p>
     <p class="small muted" style="margin:16px 0 6px">¿Cuánto te importa este tema? (1 a 5)</p>
     <div class="seg" role="group" aria-label="Importancia de 1 a 5"><button data-w="1"><b>1</b><small>No me importa</small></button><button data-w="2"><b>2</b><small>Me importa poco</small></button><button data-w="3"><b>3</b><small>Me importa</small></button><button data-w="4"><b>4</b><small>Me importa mucho</small></button><button data-w="5"><b>5</b><small>Importancia principal</small></button></div>
     <div class="err" id="qerr"></div>
@@ -184,14 +185,16 @@ function setW(w){document.querySelectorAll('.seg button').forEach(b=>b.setAttrib
 function render(){const q=Q[i],a=ans[q.id];
  $('block').textContent=q.b;$('count').textContent=`Pregunta ${i+1} de ${Q.length}`;$('prog').style.width=(i/Q.length*100)+'%';
  $('qt').textContent=q.t;$('p0').textContent=q.p0;$('p10').textContent=q.p10;
- touched=!!(a&&a.v!=null);$('slider').value=touched?a.v:5;$('val').textContent=touched?a.v:'–';
+ touched=!!(a&&a.v!=null);$('slider').value=touched?a.v:5;$('val').textContent=touched?a.v:'–';markTouched();
  setW(a&&a.w?a.w:3);$('qerr').textContent='';$('ferr').textContent='';$('prev').style.visibility=i?'visible':'hidden';
  $('next').textContent=i===Q.length-1?'Ver resultados':'Siguiente'}
 function curW(){const b=document.querySelector('.seg button[aria-pressed=true]');return b?+b.dataset.w:3}
-$('slider').addEventListener('input',()=>{touched=true;$('val').textContent=$('slider').value;$('qerr').textContent=''});
+function markTouched(){$('slider').classList.toggle('untouched',!touched);$('shint').classList.toggle('hidden',touched)}
+function pick(){touched=true;$('val').textContent=$('slider').value;$('qerr').textContent='';markTouched()}
+['input','change','pointerup'].forEach(ev=>$('slider').addEventListener(ev,pick));
 document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{setW(+b.dataset.w);const q=Q[i];if(ans[q.id]&&ans[q.id].v!=null){ans[q.id].w=+b.dataset.w;save()}}));
 function advance(){if(i<Q.length-1){i++;render()}else finish()}
-$('next').onclick=()=>{if(!touched){$('qerr').textContent='Mueve el control para elegir tu posición, o pulsa «No lo sé».';return}
+$('next').onclick=()=>{if(!touched){$('qerr').textContent='Toca o arrastra en la línea para elegir tu posición (también el 5), o pulsa «No lo sé».';return}
  ans[Q[i].id]={v:+$('slider').value,w:curW()};save();advance()};
 $('skip').onclick=()=>{ans[Q[i].id]={v:null};save();advance()};
 $('prev').onclick=()=>{if(i>0){i--;render()}};
